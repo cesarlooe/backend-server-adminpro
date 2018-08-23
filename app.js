@@ -14,6 +14,7 @@ app.use(bodyParser.json())
 // Importar rutas
 const appRoutes = require('./routes/app');
 const usuarioRoutes = require('./routes/usuario');
+const hospitalRoutes = require('./routes/hospital');
 const loginRoutes = require('./routes/login');
 
 // Conexión a la Base de Datos
@@ -24,6 +25,7 @@ mongoose.connect('mongodb://localhost:27017/hospitalDB', { useNewUrlParser: true
 
 // Rutas
 app.use('/usuario', usuarioRoutes);
+app.use('/hospital', hospitalRoutes);
 app.use('/login', loginRoutes);
 app.use('/', appRoutes);
 

@@ -1,6 +1,5 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
 const mdAutenticacion = require('../middlewares/autenticacion')
 
 const app = express();
@@ -10,7 +9,7 @@ const Usuario = require('../models/usuario');
 // ==========================================
 // Obtener todos los usuarios
 // ==========================================
-app.get('/', mdAutenticacion.verificaToken, (req, res) => {
+app.get('/', (req, res) => {
   Usuario.find({}, 'nombre email img role')
     .exec(
       (err, usuarios) => {
@@ -105,7 +104,7 @@ app.put('/:id', mdAutenticacion.verificaToken, (req, res) => {
 
 
 // ============================================
-//   Borrar un usuario por el id
+//   Eliminar un usuario por el Id
 // ============================================
 app.delete('/:id', mdAutenticacion.verificaToken, (req, res) => {
   const id = req.params.id;
