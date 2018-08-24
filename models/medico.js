@@ -2,10 +2,11 @@ const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
-const hospitalSchema = new Schema({
+const medicoSchema = new Schema({
   nombre: { type: String, required: [true, 'El nombre es necesario'] },
   img: { type: String, required: false },
   usuario: { type: Schema.Types.ObjectId, ref: 'Usuario' },
-}, { collection: 'hospitales' });
+  hospital: { type: Schema.Types.ObjectId, ref: 'Hospital', required: [true, 'El id hospital es un campo obligatorio'] },
+});
 
-module.exports = mongoose.model('Hospital', hospitalSchema);
+module.exports = mongoose.model('Medico', medicoSchema);    
