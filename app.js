@@ -13,9 +13,11 @@ app.use(bodyParser.json())
 
 // Importar rutas
 const appRoutes = require('./routes/app');
+const loginRoutes = require('./routes/login');
 const usuarioRoutes = require('./routes/usuario');
 const hospitalRoutes = require('./routes/hospital');
-const loginRoutes = require('./routes/login');
+const medicoRoutes = require('./routes/medico');
+const busquedaRoutes = require('./routes/busqueda');
 
 // Conexión a la Base de Datos
 mongoose.connect('mongodb://localhost:27017/hospitalDB', { useNewUrlParser: true }, (err, res) => {
@@ -24,9 +26,11 @@ mongoose.connect('mongodb://localhost:27017/hospitalDB', { useNewUrlParser: true
 });
 
 // Rutas
+app.use('/login', loginRoutes);
 app.use('/usuario', usuarioRoutes);
 app.use('/hospital', hospitalRoutes);
-app.use('/login', loginRoutes);
+app.use('/medico', medicoRoutes);
+app.use('/busqueda', busquedaRoutes);
 app.use('/', appRoutes);
 
 // Escuchar peticiones
