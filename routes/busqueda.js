@@ -6,24 +6,9 @@ const Hospital = require('../models/hospital');
 const Medico = require('../models/medico');
 const Usuario = require('../models/usuario');
 
-app.get('/todo/:busqueda', (req, res, next) => {
-
-  const busqueda = req.params.busqueda;
-  const regex = new RegExp(busqueda, 'i');
-
-  Promise.all([
-    buscarHospitales(regex),
-    buscarMedicos(regex),
-    buscarUsuario(regex),
-  ]).then((respuestas) => {
-    res.status(200).json({
-      ok: true,
-      hospitales: respuestas[0],
-      medicos: respuestas[1],
-      usuarios: respuestas[2],
-    });
-  });
-});
+// ==========================================
+// Funciones
+// ==========================================
 
 const buscarHospitales = (regex) => {
   return new Promise((resolve, reject) => {
@@ -54,7 +39,7 @@ const buscarMedicos = (regex) => {
   });
 };
 
-const buscarUsuario = (regex) => {
+const buscarUsuarios = (regex) => {
   return new Promise((resolve, reject) => {
     Usuario.find({}, 'nombre email role')
       .or([{ nombre: regex }, { email: regex }])
@@ -67,6 +52,69 @@ const buscarUsuario = (regex) => {
       });
   });
 };
+
+// ==========================================
+// Búsqueda por colección
+// ==========================================
+
+app.get('/coleccion/:tabla/:busqueda', (req, res, next) => {
+
+  const tabla = req.params.tabla;
+  const busqueda = req.params.busqueda;
+  const regex = new RegExp(busqueda, 'i');
+
+  let promesa;
+
+  switch(tabla) {
+    case 'usuarios':
+      promesa = buscarUsuarios(regex);
+      break;
+    case 'medicos':
+      promesa = buscarMedicos(regex);
+      break;
+    case 'hospitales':
+      promesa = buscarHospitales(regex);
+      break;
+    default:
+      return res.status(400).json({
+        ok: false,
+        mensaje: 'Los tipos de búsqueda son por usuarios, médicos y hospitales',
+        error: { message: 'Collección no válida'}
+      })
+  }
+
+  promesa.then((data) => {
+    res.status(200).json({
+      ok: true,
+      [tabla]: data,
+    });
+  });
+});
+
+// ==========================================
+// Búsqueda general
+// ==========================================
+
+app.get('/todo/:busqueda', (req, res, next) => {
+
+  const busqueda = req.params.busqueda;
+  const regex = new RegExp(busqueda, 'i');
+
+  Promise.all([
+    buscarHospitales(regex),
+    buscarMedicos(regex),
+    buscarUsuarios(regex),
+  ]).then((respuestas) => {
+    res.status(200).json({
+      ok: true,
+      hospitales: respuestas[0],
+      medicos: respuestas[1],
+      usuarios: respuestas[2],
+    });
+  });
+});
+
+
 
 
 module.exports = app;
