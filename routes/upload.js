@@ -124,6 +124,6 @@ const subirPorTipo = (tipo, id, nombreArchivo, res) => {
       });
     })
   }
-}
+};
 
 module.exports = app;
