@@ -37,9 +37,10 @@ const verify = async (token) => {
 
 app.post('/google', async (req, res) => {
   const token = req.body.token;
-
+  
+  let googleUser;
   try {
-    const googleUser = await verify(token)
+    googleUser = await verify(token);
   } catch (e) {
     return res.status(403).json({
       ok: false,
@@ -54,6 +55,7 @@ app.post('/google', async (req, res) => {
     });
   });
   */
+  console.log(googleUser);
   Usuario.findOne({ email: googleUser.email }, (err, usuarioDB) => {
     if (err) {
       return res.status(500).json({
