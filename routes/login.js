@@ -47,15 +47,7 @@ app.post('/google', async (req, res) => {
       mensaje: 'Token no válido',
     });
   }
-  /*
-  const googleUser = await verify(token).catch(() => {
-    return res.status(403).json({
-      ok: false,
-      mensaje: 'Token no válido',
-    });
-  });
-  */
-  console.log(googleUser);
+  
   Usuario.findOne({ email: googleUser.email }, (err, usuarioDB) => {
     if (err) {
       return res.status(500).json({
@@ -82,7 +74,8 @@ app.post('/google', async (req, res) => {
           ok: true,
           usuario: usuarioDB,
           token,
-          id: usuarioDB._id
+          id: usuarioDB._id,
+          menu: obtenerMenu(usuarioDB.role),
         });
       }
     } else {
@@ -113,7 +106,8 @@ app.post('/google', async (req, res) => {
           ok: true,
           usuario: usuarioDB,
           token,
-          id: usuarioDB._id
+          id: usuarioDB._id,
+          menu: obtenerMenu(usuarioDB.role),
         });
       })
     }
@@ -163,10 +157,39 @@ app.post('/', (req, res) => {
       ok: true,
       usuario: usuarioDB,
       token,
-      id: usuarioDB._id
+      id: usuarioDB._id,
+      menu: obtenerMenu(usuarioDB.role),
     });
   });
 });
 
+
+const obtenerMenu = (role) => {
+  const menu = [
+    {
+      title: 'Principal',
+      icon: 'mdi mdi-gauge',
+      submenu: [
+        { title: 'Dashboard', url: '/dashboard' },
+        { title: 'Progress', url: '/progress' },
+        { title: 'Gráficas', url: '/graficas1' }
+      ]
+    },
+    {
+      title: 'Mantenimientos',
+      icon: 'mdi mdi-folder-lock-open',
+      submenu: [
+        { title: 'Hospitales', url: '/hospitales' },
+        { title: 'Medicos', url: '/medicos' },
+      ]
+    }
+  ];
+  if (role === 'ADMIN_ROLE') {
+    menu[1].submenu.unshift(
+      { title: 'Usuarios', url: '/usuarios' },
+   )
+  }
+  return menu;
+}
 
 module.exports = app;

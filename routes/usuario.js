@@ -68,7 +68,7 @@ app.post('/', (req, res) => {
 // ==========================================
 // Actualizar usuario
 // ==========================================
-app.put('/:id', mdAutenticacion.verificaToken, (req, res) => {
+app.put('/:id', [mdAutenticacion.verificaToken, mdAutenticacion.verificaAdminOMismoUsuario], (req, res) => {
   const id = req.params.id;
   const body = req.body;
 

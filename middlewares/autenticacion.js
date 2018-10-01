@@ -37,3 +37,18 @@ exports.verificaToken = (req, res, next) => {
     next();
   });
 }
+
+exports.verificaAdminOMismoUsuario = (req, res, next) => {
+  const usuario = req.usuario;
+  const id = req.params.id;
+
+  if (usuario.role === 'ADMIN_ROLE' || usuario._id === id ) {
+    next();
+  } else {
+    return res.status(401).json({
+      ok: false,
+      mensaje: 'Token incorrecto - No es administrador',
+      errors: { message: 'No es administrador, no puede hacer eso' },
+    });
+  }
+}
