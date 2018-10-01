@@ -7,12 +7,11 @@ const Hospital = require('../models/hospital');
 
 
 // ==========================================
-// Obtener todos los medicos
+// Obtener todos los médicos
 // ==========================================
 app.get('/', (req, res) => {
   let desde = req.query.desde || 0;
   desde = Number(desde);
-
   Medico.find({})
     .skip(desde)
     .limit(5)
@@ -38,7 +37,40 @@ app.get('/', (req, res) => {
 });
 
 // ==========================================
-// Crear un medico
+// Obtener un médico
+// ==========================================
+
+app.get('/:id', (req, res) => {
+  const id = req.params.id;
+  Medico.findById(id)
+    .populate('usuario', 'nombre email img')
+    .populate('hospital')
+    .exec((err, medico) => {
+      if (err) {
+        return res.status(500).json({
+          ok: false,
+          mensaje: 'Error al buscar médico',
+          errors: err,
+        });
+      }
+
+      if (!medico) {
+        return res.status(400).json({
+          ok: false,
+          mensaje: `El médico con el id ${id} no existe`,
+          errors: { message: 'No existe un médico con ese ID' },
+        })
+      }
+
+      res.status(200).json({
+        ok: true,
+        medico,
+      });
+    });
+});
+
+// ==========================================
+// Crear un médico
 // ==========================================
 app.post('/', mdAutenticacion.verificaToken, (req, res) => {
   const body = req.body;
@@ -67,7 +99,7 @@ app.post('/', mdAutenticacion.verificaToken, (req, res) => {
 });
 
 // ==========================================
-// Actualiza un medico
+// Actualiza un médico
 // ==========================================
 app.put('/:id', mdAutenticacion.verificaToken, (req, res) => {
   const id = req.params.id;
@@ -113,7 +145,7 @@ app.put('/:id', mdAutenticacion.verificaToken, (req, res) => {
 });
 
 // ==========================================
-// Eliminar un medico por el Id
+// Eliminar un médico por el Id
 // ==========================================
 app.delete('/:id', mdAutenticacion.verificaToken, (req, res) => {
   const id = req.params.id;
